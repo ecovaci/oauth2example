@@ -1,0 +1,33 @@
+server:
+    port: 8082
+    servlet:
+      context-path: /ui
+    session:
+      cookie:
+        name: UISESSION
+security:
+  basic:
+    enabled: false
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          custom:
+            client-id: SampleClientId
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri-template: http://localhost:8082/ui/login/oauth2/code/custom
+        provider:
+          custom:
+            authorization-uri: http://localhost:8081/auth/oauth/authorize
+            token-uri: http://localhost:8081/auth/oauth/token
+            user-info-uri: http://localhost:8081/auth/user/me
+            user-name-attribute: name
+  thymeleaf:
+    cache: false
+
+logging:
+  level:
+    ROOT: INFO
