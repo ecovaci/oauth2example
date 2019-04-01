@@ -11,7 +11,11 @@ public class UserController {
 
     @RequestMapping("/user/me")
     public Principal user(Principal principal) {
-        System.out.println(principal);
         return principal;
+    }
+
+    @RequestMapping("/user/also-me")
+    public String test(Principal user) {
+        return "The principal's name is: " + user.getName();
     }
 }

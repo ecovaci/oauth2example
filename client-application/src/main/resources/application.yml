@@ -1,7 +1,7 @@
 server:
     port: 8082
     servlet:
-      context-path: /ui
+      context-path: /client
     session:
       cookie:
         name: UISESSION
@@ -18,7 +18,7 @@ spring:
             client-id: SampleClientId
             client-secret: secret
             authorization-grant-type: authorization_code
-            redirect-uri-template: http://localhost:8082/ui/login/oauth2/code/custom
+            redirect-uri-template: http://localhost:8082/client/login/oauth2/code/custom
         provider:
           custom:
             authorization-uri: http://localhost:8081/auth/oauth/authorize
@@ -27,7 +27,3 @@ spring:
             user-name-attribute: name
   thymeleaf:
     cache: false
-
-logging:
-  level:
-    ROOT: INFO

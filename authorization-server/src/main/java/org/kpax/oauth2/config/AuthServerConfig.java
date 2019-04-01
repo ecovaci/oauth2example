@@ -16,8 +16,8 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 @Configuration
 @EnableAuthorizationServer
 public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
-    
-    @Autowired    
+
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
@@ -28,11 +28,11 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-    
+
     @Override
     public void configure(final AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
         oauthServer.tokenKeyAccess("permitAll()")
-            .checkTokenAccess("isAuthenticated()").allowFormAuthenticationForClients();
+                .checkTokenAccess("isAuthenticated()").allowFormAuthenticationForClients();
     }
 
     @Override
@@ -44,14 +44,13 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
-            .withClient("SampleClientId")
-            .secret(passwordEncoder.encode("secret"))
-            .authorizedGrantTypes("authorization_code", "password")
-            .scopes("user_info")
-            .autoApprove(true)
-            .redirectUris("http://localhost:8082/ui/login/oauth2/code/custom")
-        // .accessTokenValiditySeconds(3600)
-        ; // 1 hour
+                .withClient("SampleClientId")
+                .secret(passwordEncoder.encode("secret"))
+                .authorizedGrantTypes("authorization_code", "password", "client_credentials")
+                .scopes("user_info", "read", "write")
+                .autoApprove(true)
+                .redirectUris("http://localhost:8082/client/login/oauth2/code/custom")
+        ;
     }
 
 
