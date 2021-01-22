@@ -16,7 +16,7 @@ spring:
             client-id: SampleClientId
             client-secret: secret
             authorization-grant-type: authorization_code
-            redirect-uri-template: http://localhost:8082/client/login/oauth2/code/custom
+            redirect-uri: http://localhost:8082/client/login/oauth2/code/custom
         provider:
           custom:
             authorization-uri: http://localhost:8081/auth/oauth/authorize
