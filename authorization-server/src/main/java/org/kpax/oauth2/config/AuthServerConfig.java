@@ -1,7 +1,7 @@
 package org.kpax.oauth2.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -9,8 +9,11 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
+import org.springframework.security.oauth2.provider.*;
+import org.springframework.security.oauth2.provider.approval.*;
+import org.springframework.security.oauth2.provider.request.*;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.*;
 
 
 @Configuration
@@ -18,13 +21,10 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
+    private ClientDetailsService clientDetailsService;
+
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-
-    @Autowired
-    private TokenStore tokenStore;
-
-    @Autowired
-    private UserApprovalHandler userApprovalHandler;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -39,8 +39,8 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints
-                .tokenStore(tokenStore)
-                .userApprovalHandler(userApprovalHandler)
+                .tokenStore(tokenStore())
+                .userApprovalHandler(userApprovalHandler())
                 .authenticationManager(authenticationManager);
     }
 
@@ -56,5 +56,24 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
         ;
     }
 
+    @Bean
+    public TokenStore tokenStore() {
+        return new InMemoryTokenStore();
+    }
 
+    @Bean
+    public TokenStoreUserApprovalHandler userApprovalHandler() {
+        TokenStoreUserApprovalHandler handler = new TokenStoreUserApprovalHandler();
+        handler.setTokenStore(tokenStore());
+        handler.setRequestFactory(new DefaultOAuth2RequestFactory(clientDetailsService));
+        handler.setClientDetailsService(clientDetailsService);
+        return handler;
+    }
+
+    @Bean
+    public ApprovalStore approvalStore() {
+        TokenApprovalStore store = new TokenApprovalStore();
+        store.setTokenStore(tokenStore());
+        return store;
+    }
 }
