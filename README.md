@@ -22,6 +22,11 @@ the authorization server. The username/password is john/123. You should see: _Th
 
 * Using a browser go to: http://localhost:8082/client/its-also-me - This will access the http://localhost:8081/auth/user/also-me protected resource on the resource server.
 You should get: _Message from auth server: The principal's name is: SampleClientId_
+  
+* Get a token (password grant): `curl localhost:8081/auth/oauth/token -dgrant_type=password -dscope=read -dclient_id=SampleClientId -d
+  username=john -dpassword=123 -dclient_secret=secret`
+
+* Get a token (client_credentials grant): `curl -u SampleClientId:secret localhost:8081/auth/oauth/token -dgrant_type=client_credentials -dscope=read`
 
 
 
